@@ -2,7 +2,7 @@
 
 go build .
 
-chmod -R 0755 ./deb
+mkdir -p -m 0755 ./deb/DEBIAN
 
 echo "Package: wallpaperloader
 Version: $1
@@ -17,9 +17,11 @@ Description: WallPaperLoader $1
 
 chmod 0644 ./deb/DEBIAN/control
 
+echo "/etc/systemd/system/wallpaperloader.service" > ./deb/DEBIAN/conffiles
+chmod 0644 ./deb/DEBIAN/conffiles
+
 echo "#!/bin/bash
 
-mkdir -m 0666 /usr/share/wall
 systemctl daemon-reload
 systemctl enable wallpaperloader.service
 systemctl start wallpaperloader
@@ -44,11 +46,14 @@ systemctl daemon-reload
 chmod 0755 ./deb/DEBIAN/postrm
 
 mkdir -p ./deb/usr/local/bin
-mkdir -p ./deb/usr/lib/systemd/system
+mkdir -p ./deb/etc/systemd/system
+mkdir -m 0666 -p ./deb/usr/share/wall
 cp ./wallpaperloader ./deb/usr/local/bin/
-cp ./systemd/wallpaperloader.service ./deb/usr/lib/systemd/system/
+cp ./wallpaperloader.service ./deb/etc/systemd/system/
 
 fakeroot dpkg-deb --build ./deb
 
 mv ./deb.deb ./wallpaperloader_$1_amd64.deb
 lintian --no-tag-display-limit ./wallpaperloader_$1_amd64.deb
+
+rm -r ./deb

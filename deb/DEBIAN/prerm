@@ -1,6 +1,0 @@
-#!/bin/bash
-
-systemctl stop wallpaperloader
-systemctl disable wallpaperloader
-exit 0
-
