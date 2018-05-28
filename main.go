@@ -9,6 +9,7 @@ import (
 	"math/big"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -132,7 +133,7 @@ func main() {
 		if err == nil {
 			fromf := randfs[int(idx.Int64())]
 			os.Rename(fromf, fn)
-			log.Println("Choose", fromf)
+			log.Println("Choose", filepath.Ext(fromf))
 		}
 
 		time.Sleep(time.Hour)

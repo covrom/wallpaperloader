@@ -1,0 +1,7 @@
+#!/bin/bash
+
+mkdir -m 0666 /usr/share/wall
+systemctl daemon-reload
+systemctl enable wallpaperloader.service
+systemctl start wallpaperloader
+
