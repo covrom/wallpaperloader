@@ -52,11 +52,13 @@ func main() {
 				f.Close()
 				log.Println("Writed", randfs[idx])
 			}
+			for _, src := range randfs {
+				src.Clean()
+			}
+			time.Sleep(time.Hour)
+		} else {
+			// if all sources is fail, try after 5 minutes
+			time.Sleep(5 * time.Minute)
 		}
-		ui.Clean()
-		yi.Clean()
-		bi.Clean()
-
-		time.Sleep(time.Hour)
 	}
 }
