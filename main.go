@@ -1,12 +1,21 @@
 package main
 
 import (
+	"crypto/rand"
 	"encoding/json"
 	"errors"
 	"io"
 	"log"
+	"math/big"
 	"net/http"
 	"os"
+	"time"
+)
+
+const (
+	ltmpy = "/tmp/wallpaperloader.Yandex"
+	ltmpb = "/tmp/wallpaperloader.Bing"
+	ltmpu = "/tmp/wallpaperloader.Unsplash"
 )
 
 func getYa(fn string) error {
@@ -71,20 +80,61 @@ func getBing(fn string) error {
 	return errors.New("No images")
 }
 
+func getUnsplash(fn string) error {
+	resp, err := http.Get("https://source.unsplash.com/random/1920x1080")
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return errors.New("Unsplash: not downloaded")
+	}
+
+	f, err := os.Create(fn)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	_, err = io.Copy(f, resp.Body)
+	return err
+}
+
 func main() {
 	if len(os.Args) < 2 {
-		log.Fatal("Usage: filename for saving image")
+		log.Fatal("Usage: filename suffix for saving images")
 	}
-	if err := getYa(os.Args[1]); err == nil {
-		log.Println("Yandex OK")
-		return
-	} else {
-		log.Println(err)
-	}
-	if err := getBing(os.Args[1]); err == nil {
-		log.Println("Bing OK")
-		return
-	} else {
-		log.Println(err)
+	fn := os.Args[1]
+	for {
+		randfs := make([]string, 0, 3)
+
+		if err := getUnsplash(ltmpu); err == nil {
+			randfs = append(randfs, ltmpu)
+			log.Println("Unsplash OK")
+		} else {
+			log.Println(err)
+		}
+		if err := getYa(ltmpy); err == nil {
+			randfs = append(randfs, ltmpy)
+			log.Println("Yandex OK")
+		} else {
+			log.Println(err)
+		}
+		if err := getBing(ltmpb); err == nil {
+			randfs = append(randfs, ltmpb)
+			log.Println("Bing OK")
+		} else {
+			log.Println(err)
+		}
+
+		idx, err := rand.Int(rand.Reader, big.NewInt(int64(len(randfs))))
+		if err == nil {
+			fromf := randfs[int(idx.Int64())]
+			os.Rename(fromf, fn)
+			log.Println("Choose", fromf)
+		}
+
+		time.Sleep(time.Hour)
 	}
 }
