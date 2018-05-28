@@ -1,7 +1,7 @@
 [Unit]
 Description=Wallpaper Daemon Service
-Wants=systemd-networkd-wait-online.service
-After=systemd-networkd-wait-online.service network.target local-fs.target
+After=network-online.target local-fs.target NetworkManager-wait-online.service
+Requires=network-online.target NetworkManager-wait-online.service
 
 [Service]
 Type=simple
@@ -9,4 +9,4 @@ Restart=always
 ExecStart=/usr/local/bin/wallpaperloader /usr/share/wall/wall.jpg
 
 [Install]
-WantedBy=network-online.target
+WantedBy=multi-user.target
