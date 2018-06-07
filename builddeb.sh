@@ -12,7 +12,7 @@ Priority: optional
 Architecture: amd64
 Maintainer: Roman Covanyan <rs@tsov.pro>
 Description: WallPaperLoader $1
- WallPaperLoader $1 daemon hourly load and write into file /usr/share/backgrounds/wallpaperloader/wallpaper a random wallpaper from images.yandex.ru, Bing or Unsplash
+ WallPaperLoader $1 daemon hourly load and write into file /etc/wallpaperloader/wallpaper.jpg a random wallpaper from images.yandex.ru, Bing or Unsplash
 " > ./deb/DEBIAN/control
 
 chmod 0644 ./deb/DEBIAN/control

@@ -6,7 +6,7 @@ Requires=network-online.target NetworkManager-wait-online.service
 [Service]
 Type=simple
 Restart=always
-ExecStart=/usr/local/bin/wallpaperloader /usr/share/backgrounds/wallpaperloader/wallpaper
+ExecStart=/usr/local/bin/wallpaperloader /etc/wallpaperloader/wallpaper.jpg
 
 [Install]
 WantedBy=multi-user.target
