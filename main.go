@@ -17,7 +17,7 @@ func main() {
 
 	fn := os.Args[1]
 	dir := filepath.Dir(fn)
-	if err := os.MkdirAll(dir, 0666); err != nil {
+	if err := os.MkdirAll(dir, 0755); err != nil {
 		log.Fatal(err)
 	}
 
