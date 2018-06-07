@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"log"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/covrom/wallpaperloader/wallsrc"
@@ -15,6 +16,11 @@ func main() {
 	}
 
 	fn := os.Args[1]
+	dir := filepath.Dir(fn)
+	if err := os.MkdirAll(dir, 0666); err != nil {
+		log.Fatal(err)
+	}
+
 	ui := &wallsrc.UnsplashImages{}
 	yi := &wallsrc.YandexImages{}
 	bi := &wallsrc.BingImages{}
@@ -51,6 +57,8 @@ func main() {
 				randfs[idx].WriteBody(f)
 				f.Close()
 				log.Println("Writed", randfs[idx])
+			} else {
+				log.Println(err)
 			}
 			for _, src := range randfs {
 				src.Clean()
