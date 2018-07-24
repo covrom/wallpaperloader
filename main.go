@@ -16,7 +16,7 @@ func main() {
 
 	fn := os.Args[1]
 	ui := &wallsrc.UnsplashImages{}
-	yi := &wallsrc.YandexImages{}
+	// yi := &wallsrc.YandexImages{}
 	bi := &wallsrc.BingImages{}
 
 	for {
@@ -28,12 +28,12 @@ func main() {
 		} else {
 			log.Println(err)
 		}
-		if err := yi.Get(); err == nil {
-			randfs = append(randfs, yi)
-			log.Println("Yandex OK")
-		} else {
-			log.Println(err)
-		}
+		// if err := yi.Get(); err == nil {
+		// 	randfs = append(randfs, yi)
+		// 	log.Println("Yandex OK")
+		// } else {
+		// 	log.Println(err)
+		// }
 		if err := bi.Get(); err == nil {
 			randfs = append(randfs, bi)
 			log.Println("Bing OK")
