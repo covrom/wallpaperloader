@@ -12,7 +12,7 @@ import (
 
 func main() {
 	if len(os.Args) < 2 {
-		log.Fatal("Usage: filename suffix for saving images")
+		log.Fatal("Usage: filename for saving images")
 	}
 
 	fn := os.Args[1]
@@ -21,30 +21,24 @@ func main() {
 		log.Fatal(err)
 	}
 
-	ui := &wallsrc.UnsplashImages{}
-	// yi := &wallsrc.YandexImages{}
-	bi := &wallsrc.BingImages{}
+	sources := []wallsrc.Source{
+		&wallsrc.UnsplashImagesRnd{},
+		&wallsrc.UnsplashImagesWallpaper{},
+		// &wallsrc.YandexImages{},
+		&wallsrc.BingImages{},
+	}
 
 	for {
 		randfs := make([]wallsrc.Source, 0, 3)
 
-		if err := ui.Get(); err == nil {
-			randfs = append(randfs, ui)
-			log.Println("Unsplash OK")
-		} else {
-			log.Println(err)
-		}
-		// if err := yi.Get(); err == nil {
-		// 	randfs = append(randfs, yi)
-		// 	log.Println("Yandex OK")
-		// } else {
-		// 	log.Println(err)
-		// }
-		if err := bi.Get(); err == nil {
-			randfs = append(randfs, bi)
-			log.Println("Bing OK")
-		} else {
-			log.Println(err)
+		for _, src := range sources {
+			if err := src.Get(); err == nil {
+				randfs = append(randfs, src)
+				log.Println(src, "OK")
+			} else {
+				src.Clean()
+				log.Println(err)
+			}
 		}
 
 		if len(randfs) > 0 {
@@ -52,7 +46,7 @@ func main() {
 			rand.Read(rnd)
 			idx := int(rnd[0]) % len(randfs)
 
-			f, err := os.OpenFile(fn, os.O_WRONLY|os.O_CREATE|os.O_TRUNC|os.O_SYNC, 0666)
+			f, err := os.OpenFile(fn, os.O_WRONLY|os.O_CREATE|os.O_TRUNC|os.O_SYNC, 0755)
 			if err == nil {
 				randfs[idx].WriteBody(f)
 				f.Close()
@@ -60,13 +54,16 @@ func main() {
 			} else {
 				log.Println(err)
 			}
+
 			f = nil
+
 			for _, src := range randfs {
 				src.Clean()
 			}
+
 			time.Sleep(time.Hour)
 		} else {
-			// if all sources is fail, try after 5 minutes
+			// if all sources fail, try after 5 minutes
 			time.Sleep(5 * time.Minute)
 		}
 	}

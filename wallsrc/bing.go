@@ -38,13 +38,13 @@ func (img *BingImages) Get() error {
 		defer resp.Body.Close()
 
 		if resp.StatusCode != http.StatusOK {
-			return errors.New("Bing: not downloaded")
+			return errors.New(img.String() + ": not downloaded")
 		}
 
 		_, err = img.body.ReadFrom(resp.Body)
 		return err
 	}
-	return errors.New("No images")
+	return errors.New(img.String() + ": no images")
 
 }
 

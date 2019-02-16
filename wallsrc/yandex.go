@@ -19,7 +19,7 @@ func (img *YandexImages) Get() error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return errors.New("Yandex: not downloaded")
+		return errors.New(img.String() + ": not downloaded")
 	}
 
 	_, err = img.body.ReadFrom(resp.Body)
