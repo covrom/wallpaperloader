@@ -1,12 +1,12 @@
 [Unit]
-Description=wallpaperloader
+Description=Wallpaper Daemon Service
 After=network-online.target local-fs.target NetworkManager-wait-online.service
 Requires=network-online.target NetworkManager-wait-online.service
 
 [Service]
-ExecStart=/usr/bin/wallpaperloader /var/wallpaperloader/wallpaper.jpg
-Restart=always
 Type=simple
+Restart=always
+ExecStart=/usr/local/bin/wallpaperloader /var/wallpaperloader/wallpaper.jpg
 
 [Install]
 WantedBy=multi-user.target

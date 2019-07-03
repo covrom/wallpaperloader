@@ -49,7 +49,7 @@ mkdir -p -m 0755 ./deb/usr/local/bin
 mkdir -p -m 0755 ./deb/etc/systemd/system
 #mkdir -m 0666 -p ./deb/usr/share/wall
 cp ./wallpaperloader ./deb/usr/local/bin/
-cp ./wallpaperloader.service ./deb/etc/systemd/system/
+cp ./wallpaperloader-deb.service ./deb/etc/systemd/system/wallpaperloader.service
 
 fakeroot dpkg-deb --build ./deb
 
