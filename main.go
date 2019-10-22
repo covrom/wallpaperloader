@@ -2,9 +2,12 @@ package main
 
 import (
 	"crypto/rand"
+	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/covrom/wallpaperloader/wallsrc"
@@ -18,6 +21,12 @@ func main() {
 	fn := os.Args[1]
 	dir := filepath.Dir(fn)
 	if err := os.MkdirAll(dir, 0755); err != nil {
+		log.Fatal(err)
+	}
+	blurIdx := strings.LastIndexByte(fn, '/')
+	blurfn := fn[:blurIdx] + "/blur" + fn[blurIdx:]
+	dirblur := filepath.Dir(blurfn)
+	if err := os.MkdirAll(dirblur, 0755); err != nil {
 		log.Fatal(err)
 	}
 
@@ -50,6 +59,28 @@ func main() {
 			if err == nil {
 				randfs[idx].WriteBody(f)
 				f.Close()
+
+				// convert "$FILE" -level -50%,100%,0.6 -filter Gaussian -resize 20% -define filter:sigma=2.5 -resize 500% -fill white -gravity center "$IMAGE".jpg
+				exec.Command(
+					"convert",
+					fmt.Sprintf("%q", fn),
+					"-level",
+					"-50%,100%,0.6",
+					"-filter",
+					"Gaussian",
+					"-resize",
+					"20%",
+					"-define",
+					"filter:sigma=2.5",
+					"-resize",
+					"500%",
+					"-fill",
+					"white",
+					"-gravity",
+					"center",
+					fmt.Sprintf("%q", blurfn),
+				).Run()
+
 				log.Println("Writed", randfs[idx])
 			} else {
 				log.Println(err)
