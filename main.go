@@ -2,7 +2,6 @@ package main
 
 import (
 	"crypto/rand"
-	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -61,9 +60,9 @@ func main() {
 				f.Close()
 
 				// convert "$FILE" -level -50%,100%,0.6 -filter Gaussian -resize 20% -define filter:sigma=2.5 -resize 500% -fill white -gravity center "$IMAGE".jpg
-				exec.Command(
+				if err := exec.Command(
 					"convert",
-					fmt.Sprintf("%q", fn),
+					fn,
 					"-level",
 					"-50%,100%,0.6",
 					"-filter",
@@ -78,8 +77,10 @@ func main() {
 					"white",
 					"-gravity",
 					"center",
-					fmt.Sprintf("%q", blurfn),
-				).Run()
+					blurfn,
+				).Run(); err != nil {
+					log.Println(err)
+				}
 
 				log.Println("Writed", randfs[idx])
 			} else {
